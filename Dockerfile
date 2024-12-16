@@ -25,6 +25,9 @@ RUN apt-get update && \
     apt-get install -y tesseract-ocr && \
     rm -rf /var/lib/apt/lists/*
 
+# Install ffmpeg and libsm6 libxext6
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y
+
 # Install Ghostscript
 RUN wget https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10012/ghostscript-10.01.2.tar.gz && \
     tar -xvf ghostscript-10.01.2.tar.gz && \
@@ -53,11 +56,11 @@ RUN pip install --no-cache-dir --no-warn-script-location torch torchvision torch
 ## ====
 RUN pip install --no-cache-dir --no-warn-script-location PyMuPDF pydantic ftfy python-dotenv \ 
     pydantic-settings tabulate pyspellchecker ocrmypdf nltk thefuzz scikit-learn texify \
-    python-magic
+    python-magic bs4 tabled-pdf markdownify
 
 COPY . .
 
-RUN python convert_single.py test.pdf test.md
+RUN python convert_single.py --output_dir test_output --output_format markdown
 
 # The command to run the application
 # CMD ["poetry", "run", "your-app-command"]
